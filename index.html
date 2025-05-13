@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Distribución de Frecuencias</title>
+
+  <!-- MathJax para fórmulas -->
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+        Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f9f9f9;
+      color: #333;
+    }
+
+    header {
+      background-color: #007aff;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    main {
+      max-width: 960px;
+      margin: auto;
+      padding: 1rem;
+    }
+
+    section {
+      margin-bottom: 2rem;
+      background: white;
+      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+
+    h2 {
+      color: #007aff;
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 0.5rem;
+    }
+
+    button {
+      background-color: #007aff;
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    button:hover {
+      background-color: #005ecb;
+    }
+
+    input[type="text"] {
+      width: 60px;
+      padding: 0.4rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-right: 1rem;
+    }
+
+    .resultado {
+      margin-top: 0.5rem;
+      font-weight: bold;
+      color: green;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 0.6rem;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f0f0f0;
+    }
+
+    .boxed {
+      display: inline-block;
+      border: 1px solid #007aff;
+      border-radius: 4px;
+      padding: 0.2rem 0.4rem;
+      color: #007aff;
+      font-weight: bold;
+    }
+
+    .pregunta {
+      margin-bottom: 1rem;
+    }
+
+    .resp {
+      margin-left: 0.5rem;
+      color: green;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Distribución de Frecuencias</h1>
+</header>
+
+<main>
+
+  <!-- Datos -->
+  <section>
+    <h2>📊 Ejemplo 1</h2>
+    <p><strong>Edades de 40 pacientes atendidos en un hospital durante un día.</strong></p>
+    <p id="datosOriginales">Datos originales: 52, 19, 20, 21, 22, 35, 23, 24, 24, 25, 25, 26, 26, 27, 28, 29, 30, 30, 31, 32, 33, 34, 34, 22, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 18</p>
+    <button onclick="mostrarDatosOrdenados()">Mostrar datos ordenados</button>
+    <div id="datosOrdenados" style="margin-top: 1rem;"></div>
+  </section>
+
+  <!-- Cálculos preliminares -->
+  <section>
+    <h2>📐 Cálculos Preliminares</h2>
+    <p><strong>Rango (R):</strong> 
+      \(  R = \text{Valor máximo} - \text{Valor mínimo}  \)
+      <input type="text" id="rangoInput" placeholder="R" />
+      <button onclick="verificarRango()">Verificar</button>
+      <span class="resultado" id="rangoResult"></span>
+    </p>
+    <p><strong>Número de intervalos (k):</strong> 6 (establecido)</p>
+    <p><strong>Amplitud (A):</strong> 
+      \( A = \frac{R}{k} \)
+      <input type="text" id="amplitudInput" placeholder="A" />
+      <button onclick="verificarAmplitud()">Verificar</button>
+      <span class="resultado" id="amplitudResult"></span>
+    </p>
+  </section>
+
+  <!-- Tabla de Distribución -->
+  <section>
+    <h2>🧮 Tabla de Distribución de Frecuencias</h2>
+    <p>Introduce los valores en los recuadros vacíos.</p>
+    <button onclick="mostrarTablaInputs()">Mostrar tabla con entradas</button>
+    <button onclick="mostrarTablaCorrecta()">Mostrar tabla completa</button>
+    <div id="tablaContainer" style="overflow-x:auto;"></div>
+  </section>
+
+  <!-- Preguntas -->
+  <section>
+    <h2>❓ Preguntas</h2>
+    <div class="pregunta">
+      <p>1. ¿Cuántas personas tienen edades entre 18 y 23 inclusive? 
+        <input type="text" id="q1" />
+        <button onclick="checkQ(1)">✔</button>
+        <span class="resp" id="r1"></span>
+      </p>
+    </div>
+    <div class="pregunta">
+      <p>2. ¿Cuántas personas tienen edades entre 23 y 30? 
+        <input type="text" id="q2" />
+        <button onclick="checkQ(2)">✔</button>
+        <span class="resp" id="r2"></span>
+      </p>
+    </div>
+    <div class="pregunta">
+      <p>3. ¿Cuántas personas tienen edades entre 30 y 41 inclusive? 
+        <input type="text" id="q3" />
+        <button onclick="checkQ(3)">✔</button>
+        <span class="resp" id="r3"></span>
+      </p>
+    </div>
+    <div class="pregunta">
+      <p>4. ¿Qué proporción de personas tienen edades entre 42 y 47 inclusive? 
+        <input type="text" id="q4" />
+        <button onclick="checkQ(4)">✔</button>
+        <span class="resp" id="r4"></span>
+      </p>
+    </div>
+    <div class="pregunta">
+      <p>5. ¿Qué porcentaje de personas son mayores de 47 años? 
+        <input type="text" id="q5" />
+        <button onclick="checkQ(5)">✔</button>
+        <span class="resp" id="r5"></span>
+      </p>
+    </div>
+    <div class="pregunta">
+      <p>6. ¿Cuántas personas tienen edades de a los más 35 años? 
+        <input type="text" id="q6" />
+        <button onclick="checkQ(6)">✔</button>
+        <span class="resp" id="r6"></span>
+      </p>
+    </div>
+    <div class="pregunta">
+      <p>7. ¿Qué proporción tienen edades como máximo 41 años? 
+        <input type="text" id="q7" />
+        <button onclick="checkQ(7)">✔</button>
+        <span class="resp" id="r7"></span>
+      </p>
+    </div>
+    <div class="pregunta">
+      <p>8. ¿Qué porcentaje de personas tienen al menos 42 años? 
+        <input type="text" id="q8" />
+        <button onclick="checkQ(8)">✔</button>
+        <span class="resp" id="r8"></span>
+      </p>
+    </div>
+    <div class="pregunta">
+      <p>9. El 60% de las personas tiene edades mayores o iguales a: 
+        <input type="text" id="q9" />
+        <button onclick="checkQ(9)">✔</button>
+        <span class="resp" id="r9"></span>
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  const datosOriginales = [52, 19, 20, 21, 22, 35, 23, 24, 24, 25, 25, 26, 26, 27, 28, 29, 30, 30, 31, 32, 33, 34, 34, 22, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 18];
+  const datosOrdenados = [...datosOriginales].sort((a, b) => a - b);
+
+  function mostrarDatosOrdenados() {
+    document.getElementById('datosOrdenados').innerHTML = `
+      <p><strong>Datos ordenados:</strong> ${datosOrdenados.join(', ')}</p>`;
+  }
+
+  function verificarRango() {
+    const rangoCorrecto = 34;
+    const user = parseInt(document.getElementById('rangoInput').value);
+    const result = user === rangoCorrecto ? `✅ Correcto: R = ${rangoCorrecto}` : `❌ Incorrecto. La respuesta es R = ${rangoCorrecto}`;
+    document.getElementById('rangoResult').textContent = result;
+  }
+
+  function verificarAmplitud() {
+    const amplitudCorrecta = 6;
+    const user = parseInt(document.getElementById('amplitudInput').value);
+    const result = user === amplitudCorrecta ? `✅ Correcto: A = ${amplitudCorrecta}` : `❌ Incorrecto. La respuesta es A = ${amplitudCorrecta}`;
+    document.getElementById('amplitudResult').textContent = result;
+  }
+
+  function crearCeldaConInput(valor) {
+    return `<td><input type="text" data-correct="${valor}" style="width:60px;" /></td>`;
+  }
+
+  function mostrarTablaInputs() {
+    const tablaHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th colspan="2"><strong>Intervalo</strong></th>
+            <th colspan="2"><strong>Límites Reales</strong></th>
+            <th rowspan="2">Marca<br>de Clase</th>
+            <th rowspan="2">Frec.<br>Abs.</th>
+            <th rowspan="2">Frec.<br>Acum.</th>
+            <th rowspan="2">Frec.<br>Rel.</th>
+            <th rowspan="2">Frec. Rel.<br>Acum.</th>
+          </tr>
+          <tr>
+            <th>LI</th>
+            <th>LS</th>
+            <th>LRI</th>
+            <th>LRS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            ${crearCeldaConInput("18")} ${crearCeldaConInput("23")}
+            ${crearCeldaConInput("17.5")} ${crearCeldaConInput("23.5")}
+            ${crearCeldaConInput("20.5")}
+            ${crearCeldaConInput("7")} ${crearCeldaConInput("7")}
+            ${crearCeldaConInput("0.175")} ${crearCeldaConInput("0.175")}
+          </tr>
+          <tr>
+            ${crearCeldaConInput("24")} ${crearCeldaConInput("29")}
+            ${crearCeldaConInput("23.5")} ${crearCeldaConInput("29.5")}
+            ${crearCeldaConInput("26.5")}
+            ${crearCeldaConInput("9")} ${crearCeldaConInput("16")}
+            ${crearCeldaConInput("0.225")} ${crearCeldaConInput("0.400")}
+          </tr>
+          <tr>
+            ${crearCeldaConInput("30")} ${crearCeldaConInput("35")}
+            ${crearCeldaConInput("29.5")} ${crearCeldaConInput("35.5")}
+            ${crearCeldaConInput("32.5")}
+            ${crearCeldaConInput("8")} ${crearCeldaConInput("24")}
+            ${crearCeldaConInput("0.200")} ${crearCeldaConInput("0.600")}
+          </tr>
+          <tr>
+            ${crearCeldaConInput("36")} ${crearCeldaConInput("41")}
+            ${crearCeldaConInput("35.5")} ${crearCeldaConInput("41.5")}
+            ${crearCeldaConInput("38.5")}
+            ${crearCeldaConInput("7")} ${crearCeldaConInput("31")}
+            ${crearCeldaConInput("0.175")} ${crearCeldaConInput("0.775")}
+          </tr>
+          <tr>
+            ${crearCeldaConInput("42")} ${crearCeldaConInput("47")}
+            ${crearCeldaConInput("41.5")} ${crearCeldaConInput("47.5")}
+            ${crearCeldaConInput("44.5")}
+            ${crearCeldaConInput("6")} ${crearCeldaConInput("37")}
+            ${crearCeldaConInput("0.150")} ${crearCeldaConInput("0.925")}
+          </tr>
+          <tr>
+            ${crearCeldaConInput("48")} ${crearCeldaConInput("53")}
+            ${crearCeldaConInput("47.5")} ${crearCeldaConInput("53.5")}
+            ${crearCeldaConInput("50.5")}
+            ${crearCeldaConInput("3")} ${crearCeldaConInput("40")}
+            ${crearCeldaConInput("0.075")} ${crearCeldaConInput("1.000")}
+          </tr>
+        </tbody>
+      </table>
+      <button onclick="verificarTabla()" style="margin-top: 1rem;">Verificar tabla</button>
+      <div id="tablaResult" style="margin-top: 1rem; font-weight:bold; color:green;"></div>
+    `;
+    document.getElementById('tablaContainer').innerHTML = tablaHTML;
+  }
+
+  function mostrarTablaCorrecta() {
+    const tablaHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th colspan="2"><strong>Intervalo</strong></th>
+            <th colspan="2"><strong>Límites Reales</strong></th>
+            <th rowspan="2">Marca<br>de Clase</th>
+            <th rowspan="2">Frec.<br>Abs.</th>
+            <th rowspan="2">Frec.<br>Acum.</th>
+            <th rowspan="2">Frec.<br>Rel.</th>
+            <th rowspan="2">Frec. Rel.<br>Acum.</th>
+          </tr>
+          <tr>
+            <th>LI</th>
+            <th>LS</th>
+            <th>LRI</th>
+            <th>LRS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="boxed">18</span></td>
+            <td><span class="boxed">23</span></td>
+            <td><span class="boxed">17.5</span></td>
+            <td><span class="boxed">23.5</span></td>
+            <td><span class="boxed">20.5</span></td>
+            <td><span class="boxed">7</span></td>
+            <td><span class="boxed">7</span></td>
+            <td><span class="boxed">0.175</span></td>
+            <td><span class="boxed">0.175</span></td>
+          </tr>
+          <tr>
+            <td><span class="boxed">24</span></td>
+            <td><span class="boxed">29</span></td>
+            <td><span class="boxed">23.5</span></td>
+            <td><span class="boxed">29.5</span></td>
+            <td><span class="boxed">26.5</span></td>
+            <td><span class="boxed">9</span></td>
+            <td><span class="boxed">16</span></td>
+            <td><span class="boxed">0.225</span></td>
+            <td><span class="boxed">0.400</span></td>
+          </tr>
+          <tr>
+            <td><span class="boxed">30</span></td>
+            <td><span class="boxed">35</span></td>
+            <td><span class="boxed">29.5</span></td>
+            <td><span class="boxed">35.5</span></td>
+            <td><span class="boxed">32.5</span></td>
+            <td><span class="boxed">8</span></td>
+            <td><span class="boxed">24</span></td>
+            <td><span class="boxed">0.200</span></td>
+            <td><span class="boxed">0.600</span></td>
+          </tr>
+          <tr>
+            <td><span class="boxed">36</span></td>
+            <td><span class="boxed">41</span></td>
+            <td><span class="boxed">35.5</span></td>
+            <td><span class="boxed">41.5</span></td>
+            <td><span class="boxed">38.5</span></td>
+            <td><span class="boxed">7</span></td>
+            <td><span class="boxed">31</span></td>
+            <td><span class="boxed">0.175</span></td>
+            <td><span class="boxed">0.775</span></td>
+          </tr>
+          <tr>
+            <td><span class="boxed">42</span></td>
+            <td><span class="boxed">47</span></td>
+            <td><span class="boxed">41.5</span></td>
+            <td><span class="boxed">47.5</span></td>
+            <td><span class="boxed">44.5</span></td>
+            <td><span class="boxed">6</span></td>
+            <td><span class="boxed">37</span></td>
+            <td><span class="boxed">0.150</span></td>
+            <td><span class="boxed">0.925</span></td>
+          </tr>
+          <tr>
+            <td><span class="boxed">48</span></td>
+            <td><span class="boxed">53</span></td>
+            <td><span class="boxed">47.5</span></td>
+            <td><span class="boxed">53.5</span></td>
+            <td><span class="boxed">50.5</span></td>
+            <td><span class="boxed">3</span></td>
+            <td><span class="boxed">40</span></td>
+            <td><span class="boxed">0.075</span></td>
+            <td><span class="boxed">1.000</span></td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+    document.getElementById('tablaContainer').innerHTML = tablaHTML;
+  }
+
+  function verificarTabla() {
+    let totalCorrectas = 0;
+    const inputs = document.querySelectorAll("input[data-correct]");
+    inputs.forEach(input => {
+      if (input.value.trim() === input.dataset.correct) {
+        totalCorrectas++;
+      }
+    });
+    document.getElementById("tablaResult").textContent = `✅ Has acertado ${totalCorrectas} de ${inputs.length} campos.`;
+  }
+
+  const respuestas = {
+    1: 7,
+    2: 9,
+    3: 15,
+    4: 0.15,
+    5: 7.5,
+    6: 24,
+    7: 0.775,
+    8: 0.225,
+    9: 35
+  };
+
+  function checkQ(n) {
+    const val = parseFloat(document.getElementById("q"+n).value);
+    if (val === respuestas[n]) {
+      document.getElementById("r"+n).textContent = "= ✅ Correcto";
+    } else {
+      document.getElementById("r"+n).textContent = "= ❌ Incorrecto. Debe ser: " + respuestas[n];
+    }
+  }
+</script>
+
+</body>
+</html>
